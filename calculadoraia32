@@ -1,26 +1,25 @@
 section .data
-msg0 db 	'Digite seu nome: ',0
-tammsg0 	EQU 17
-msg1 db 	'Hola, ',0
-tammsg1		EQU 6
-msg2 db 	'. bem-vindo ao programa de CALC IA-32',0
-tammsg2		EQU 37
-msg3 db 	'Escolha uma opcao: 1-soma, 2-subtracao, 3-multiplicacao, 4-divisao, 5-mod, 6-sair',0
-tammsg3		EQU 81
-msg4 db		'Digite primeiro operando: '
-tammsg4		EQU 26
-msg5 db		'Digite segundo operando: '
-tammsg5		EQU 25
+msg0 db 	'Digite seu nome: ', 0dh,0ah
+tammsg0 	EQU $-msg0
+msg1 db 	'Hola, '
+tammsg1		EQU $-msg1
+msg2 db 	'Bem-vindo ao programa de CALC IA-32',0dh,0ah
+tammsg2		EQU $-msg2
+msg3 db 	'Escolha uma opcao: 1-soma, 2-subtracao, 3-multiplicacao, 4-divisao, 5-mod, 6-sair',0dh,0ah
+tammsg3		EQU $-msg3
+msg4 db		'Digite primeiro operando: ',0dh,0ah
+tammsg4		EQU $-msg4
+msg5 db		'Digite segundo operando: ',0dh,0ah
+tammsg5		EQU $-msg5
 
 
 section .bss
-nome resb 40
-opcao resb 2
-operador1 resb 2
-operador2 resb 2
-resposta resb 4
-resto resb 2
-tamnome EQU $-nome
+nome resb 20
+opcao resb 4
+operando1 resb 4
+operando2 resb 4
+resposta resb 8
+resto resb 4
 
 
 section .text
@@ -35,7 +34,7 @@ _start:
 	mov eax,3 ;pega o nome
 	mov ebx,0
 	mov ecx,nome
-	mov edx,tamnome
+	mov edx,20
 	int 80h
 	
 	mov eax,4 ;printa mensagem de hola
@@ -46,8 +45,8 @@ _start:
 	
 	mov eax,4 ;printa o nome
 	mov ebx,1
-	mov ecx,name
-	mov edx,tamnome
+	mov ecx,nome
+	mov edx,20
 	int 80h
 	
 	mov eax,4 ;printa mensagem de boas vindas
@@ -85,7 +84,7 @@ _start:
 	mov eax,3 ;pega operando1
 	mov ebx,0
 	mov ecx,operando1
-	mov edx,2
+	mov edx,4
 	int 80h
 	
 	mov eax,4 ;printa solicitacao de operando2
@@ -97,5 +96,17 @@ _start:
 	mov eax,3 ;pega operando2
 	mov ebx,0
 	mov ecx,operando2
-	mov edx,2
+	mov edx,4
 	int 80h
+	
+	mov eax, 1 ; Exit code
+	mov ebx, 0
+	int 80h
+	
+	
+	
+	
+	
+	
+	
+	
