@@ -1,0 +1,21 @@
+2.3 Entrada e Saída de DADOS em IA-32
+
+
+Faça um programa em IA-32 que represente uma calculadora que possa realizar as operações de SOMA, SUBTRAÇÃO, MULTIPLICAÇÃO e DIVIÃO e MOD. 
+O programa deve inicialmente perguntar para o usuário seu nome, depois dar uma mensagem de boas vindas (“Hola, ¡nome do usu´ario¿, bem-vindo ao programa de CALC
+IA-32”). 
+Depois deve mostrar um menu:
+ESCOLHA UMA OPÇÃO:
+- 1: SOMA
+- 2: SUBTRAÇÃO
+- 3: MULTIPLICAÇÃO
+- 4: DIVISÃO
+- 5: MOD
+- 6: SAIR
+A opção 6 deve terminar o programa. 
+Qualquer opção entre 1 a 5, deve pedir 2 argumentos assumindo que são números inteiros COM SINAL 
+(podendo ser representados com até 32 bits). 
+Deve mostrar o resultado final. Esperar o usuário digitar ENTER e novamente mostrar o mesmo menu. 
+Para entrada e saída de dados o programa deve usar FUNÇÕES, uma função para ler números inteiros com sinal, uma função para
+escrever números inteiros com sinal, uma função para ler strings e uma função para
+escrever strings. O programa pode usar passagem de parâmetros pela pilha (ou por registradores).
