@@ -54,7 +54,8 @@ _start:
 	mov ecx,msg2
 	mov edx,tammsg2
 	int 80h
-	
+
+MENU:	
 	mov eax,4 ;printa menu
 	mov ebx,1
 	mov ecx,msg3
@@ -71,10 +72,9 @@ _start:
 	mov CL,[opcao]
 	sub CL,0x30
 	
-	;if opcao ==6, jump para exit
-	
-	;else
-	
+	cmp CL,6 ;if opcao ==6 jump para exit
+	jne FINAL
+		
 	mov eax,4 ;printa solicitacao de operando1
 	mov ebx,1
 	mov ecx,msg4
@@ -99,6 +99,9 @@ _start:
 	mov edx,4
 	int 80h
 	
+	JMP MENU
+	
+FINAL:
 	mov eax, 1 ; Exit code
 	mov ebx, 0
 	int 80h
