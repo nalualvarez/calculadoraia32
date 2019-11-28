@@ -31,11 +31,13 @@ _start:
 	mov edx,tammsg0
 	int 80h
 	
-	mov eax,3 ;pega o nome
-	mov ebx,0
-	mov ecx,nome
-	mov edx,20
-	int 80h
+	;passar endereço nome push dw nome
+	call LESTRING
+	;mov eax,3 ;pega o nome
+	;mov ebx,0
+	;mov ecx,nome
+	;mov edx,20
+	;int 80h
 	
 	mov eax,4 ;printa mensagem de hola
 	mov ebx,1
@@ -113,80 +115,24 @@ FINAL:
 	
 	
 	
-LerString:
-;receive ascii string input
-    push ebp        ;creating stack frame
-    mov ebp, esp    ;creating stack frame
-    push ebx    ;size of string
-    push ecx    ;pointer for string and counter
-    push edx    ;size of string and string pointer
-    push esi    ;used as counter to get inputs - char by char
-    push edi    ;used as pointer to string
-    ;ask for input
+LESTRING: ; f
+    push ebp        ;cria frame de pilha
+    mov ebp, esp   
+    pusha
+    
+  ;mov eax,3 
+  ;pega o nome
+;mov ebx,0
+;mov ecx, ebp+4
+;mov edx,20
+;int 80h
 
 
 
-    push dword 0 ;reserve buffer to read the extra chars
-    mov ecx, esp    ;move the buffer to ecx
-    sub esi, esi    ;reset counter
-    mov edi, [ebp + 12] ;pointer to string
-
-    get_input_charbychar_string:
-    mov eax, 3
-    mov ebx, 0  ;0 = stdin - teclado
-    mov edx, 1
-    int 0X80
-    cmp byte [ecx], 0X0A    ;check if char is ENTER
-    je insert_enter ;if enter - finish input
-    mov eax, [ecx]  ;move the char into the string
-    mov [edi + esi*4], eax  ;treat and store each character as a 32bit value
-    inc esi ;increment char counter
-    cmp esi, [ebp + 8]  ;check if string is full --> counter == string size
-    je check_extra_char_enter_string   ;if yes = string full but still no enter, read and trash next chars until enter
-    jmp get_input_charbychar_string    ;keep getting input
-
-    insert_enter:
-    mov dword [edi + esi*4], 0X0A
-    jmp finish_input_string
-
-    check_extra_char_enter_string: ;read char and throw it away until enter
-    mov eax, 3
-    mov ebx, 0  ;0 = stdin - teclado
-    mov edx, 1
-    int 0X80
-    cmp byte [ecx], 0X0A    ;check if char is ENTER
-    jne check_extra_char_enter_string
-
-    finish_input_string:   ;finish fetting inputs
-
-    add esp, 4  ;remove buffer
-    pop edi ;pops edi back
-    pop esi ;pops esi back
-
-
-    mov edx, [ebp + 12] ; move the string pointer to edx
-    mov ecx, 0  ;reset counter
-    mov ebx, [ebp + 8]  ;move the string size to ebx - avoid segfault if string is max size and has no ENTER
-    dec ebx ; dec string size to get the last element index - needed to compare with counter (from 1->x to 0->x-1)
-    count_input:
-    cmp byte [edx], 0X0A    ;check if char is ENTER
-    je endcount_input_plusone ;if yes, end counting loop
-    inc ecx ;increment counter
-    cmp ecx, ebx    ;check if counter is at the end of the string
-    je endcount_input ;if yes, end counting loop
-    add edx, 4 ;get next char
-    jmp count_input   ;keep counting
-    endcount_input_plusone:
-    inc ecx
-    endcount_input:
-    mov eax, ecx    ;move counter to eax - return the number of chars read
-
-    pop edx
-    pop ecx
-    pop ebx
+   popa
 
     pop ebp ;removing stack frame
-    ret 8   ;return and remove 2 arguments from stack
+    ret 4   ;return and remove 2 arguments from stack
 
 
 
