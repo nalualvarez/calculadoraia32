@@ -15,21 +15,23 @@ tammsg5		EQU $-msg5
 
 section .bss
 nome resb 20
-opcao resb 4
+opcao resb 1
 operando1 resb 12
 operando2 resb 12
 resposta resb 11
-resto resb 11
+
 
 
 section .text
 global _start
 _start:
-	mov eax,4 ;printa solicitacao de nome
-	mov ebx,1
-	mov ecx,msg0
-	mov edx,tammsg0
-	int 80h
+	push endereço da msg0
+	call ESCREVESTRING
+	;mov eax,4 ;printa solicitacao de nome
+	;mov ebx,1
+	;mov ecx,msg0
+	;mov edx,tammsg0
+	;int 80h
 	
 	;passar endereço nome push dw nome
 	call LESTRING
@@ -39,31 +41,41 @@ _start:
 	;mov edx,20
 	;int 80h
 	
-	mov eax,4 ;printa mensagem de hola
-	mov ebx,1
-	mov ecx,msg1
-	mov edx,tammsg1
-	int 80h
+	push endereço da msg1
+	call ESCREVESTRING
+	;mov eax,4 ;printa mensagem de hola
+	;mov ebx,1
+	;mov ecx,msg1
+	;mov edx,tammsg1
+	;int 80h
 	
-	mov eax,4 ;printa o nome
-	mov ebx,1
-	mov ecx,nome
-	mov edx,20
-	int 80h
+	;passar endereço nome push dw nome
+	call ESCREVESTRING
+	;mov eax,4 ;printa o nome
+	;mov ebx,1
+	;mov ecx,nome
+	;mov edx,20
+	;int 80h
 	
-	mov eax,4 ;printa mensagem de boas vindas
-	mov ebx,1
-	mov ecx,msg2
-	mov edx,tammsg2
-	int 80h
+	push endereço da msg2
+	call ESCREVESTRING
+	;mov eax,4 ;printa mensagem de boas vindas
+	;mov ebx,1
+	;mov ecx,msg2
+	;mov edx,tammsg2
+	;int 80h
 
 MENU:	
-	mov eax,4 ;printa menu
-	mov ebx,1
-	mov ecx,msg3
-	mov edx,tammsg3
-	int 80h
+	push endereço da msg3
+	call ESCREVESTRING
+	;mov eax,4 ;printa menu
+	;mov ebx,1
+	;mov ecx,msg3
+	;mov edx,tammsg3
+	;int 80h
 	
+	;passar endereço nome push dw opcao
+	call ESCREVESTRING
 	mov eax,3 ;pega opcao do menu
 	mov ebx,0
 	mov ecx,opcao
@@ -76,30 +88,128 @@ MENU:
 	
 	cmp CL,6 ;if opcao ==6 jump para exit
 	jne FINAL
-		
-	mov eax,4 ;printa solicitacao de operando1
-	mov ebx,1
-	mov ecx,msg4
-	mov edx,tammsg4
-	int 80h
+	cmp CL,1 ;if opcao ==1 jump para soma
+	jne SOMA
+	cmp CL,2 ;if opcao ==2 jump para subtracao
+	jne SUBSTRACAO
+	cmp CL,3 ;if opcao ==3 jump para multiplicacao
+	jne MULTIPLICACAO
+	cmp CL,4 ;if opcao ==4 jump para divisao
+	jne DIVISAO
+	cmp CL,5 ;if opcao ==5 jump para mod
+	jne MOD
 	
-	mov eax,3 ;pega operando1
-	mov ebx,0
-	mov ecx,operando1
-	mov edx,12
-	int 80h
+SOMA:	
+	push endereço da msg4
+	call ESCREVESTRING
+	;mov eax,4 ;printa solicitacao de operando1
+	;mov ebx,1
+	;mov ecx,msg4
+	;mov edx,tammsg4
+	;int 80h
 	
-	mov eax,4 ;printa solicitacao de operando2
-	mov ebx,1
-	mov ecx,msg5
-	mov edx,tammsg5
-	int 80h
+	;passar endereço push dw operando1
+	call LESTRING
+	;mov eax,3 ;pega operando1
+	;mov ebx,0
+	;mov ecx,operando1
+	;mov edx,12
+	;int 80h
 	
-	mov eax,3 ;pega operando2
-	mov ebx,0
-	mov ecx,operando2
-	mov edx,12
-	int 80h
+	push endereço da msg5
+	call ESCREVESTRING
+	;mov eax,4 ;printa solicitacao de operando2
+	;mov ebx,1
+	;mov ecx,msg5
+	;mov edx,tammsg5
+	;int 80h
+	
+	;passar endereço push dw operando2
+	call LESTRING
+	;mov eax,3 ;pega operando2
+	;mov ebx,0
+	;mov ecx,operando2
+	;mov edx,12
+	;int 80h
+	
+	;faz a conta
+	;printa a resposta
+	
+	JMP MENU
+
+SUBTRACAO:
+	push endereço da msg4
+	call ESCREVESTRING
+	
+	;passar endereço push dw operando1
+	call LESTRING
+	
+	push endereço da msg5
+	call ESCREVESTRING
+	
+	;passar endereço push dw operando2
+	call LESTRING
+	
+	;faz a conta
+	;printa a resposta
+	
+	JMP MENU
+	
+
+MULTIPLICACAO:
+	push endereço da msg4
+	call ESCREVESTRING
+	
+	;passar endereço push dw operando1
+	call LESTRING
+	
+	push endereço da msg5
+	call ESCREVESTRING
+	
+	;passar endereço push dw operando2
+	call LESTRING
+	
+	;faz a conta
+	;printa a resposta
+	
+	JMP MENU
+
+DIVISAO:
+	push endereço da msg4
+	call ESCREVESTRING
+	
+	;passar endereço push dw operando1
+	call LESTRING
+	
+	push endereço da msg5
+	call ESCREVESTRING
+	
+	;passar endereço push dw operando2
+	call LESTRING
+	
+	;faz a conta
+	;printa a resposta
+	
+	JMP MENU
+
+MOD: 
+	push endereço da msg4
+	call ESCREVESTRING
+	
+	;passar endereço push dw operando1
+	call LESTRING
+	
+	push endereço da msg5
+	call ESCREVESTRING
+	
+	;passar endereço push dw operando2
+	call LESTRING
+	
+	;faz a conta
+	;printa a resposta
+	
+	
+	
 	
 	JMP MENU
 	
