@@ -115,7 +115,7 @@ FINAL:
 	
 	
 	
-LESTRING: ; f
+LESTRING: ; 
     push ebp        ;cria frame de pilha
     mov ebp, esp   
     pusha
@@ -127,67 +127,32 @@ LESTRING: ; f
 ;mov edx,20
 ;int 80h
 
-
-
    popa
 
     pop ebp ;removing stack frame
-    ret 4   ;return and remove 2 arguments from stack
+    ret 4   ;return and remove 1 argument from stack
 
 
 
-EscreverString:
-;print integer (ascii string) output
-    push ebp    ;creating stack frame
-    mov ebp, esp    ;creating stack frame
-    push ebx    ;dont push eax because eax is the return value
-    push ecx    ;pointer for string and counter
-    push edx    ;size of string and pointer to string
+ESCREVESTRING:
 
-    mov ecx, 0  ;reset counter
-    mov edx, [ebp + 12] ;pointer to string moved into edx
-    mov ebx, [ebp + 8]  ;string size
-
-    count_output:
-    cmp byte [edx], 0X0A    ;check if char is ENTER
-    je endcount_output ;if yes, end counting loop
-    inc ecx ;increment counter
-    cmp ecx, ebx    ;check if counter is at the end of the string
-    je endcount_output ;if yes, end counting loop
-    add edx, 4 ;get next char
-    jmp count_output   ;keep counting
-    endcount_output:
-    push ecx    ;store the number of chars in the string
-
-    add ecx, ecx  ;multiply ecx by 4  - treat each char as 32 bit
-    add ecx, ecx  ;||
-
-    mov eax, 4
-    mov ebx, 1  ;1 = stdout - monitor
-    mov edx, ecx
-    mov ecx, [ebp + 12]
-    int 0X80
-
-    ;outputs a linebreak
-    push dword 0X0D0A ;add linebreak to stack
-    mov eax, 4
-    mov ebx, 1
-    mov ecx, esp
-    mov edx, 2
-    int 0X80
-    add esp, 4 ;remove linebreak from stack
-
-    pop eax ;moved ecx into eax - char counter
-    pop edx
-    pop ecx
-    pop ebx
-
+  push ebp        ;cria frame de pilha
+    mov ebp, esp   
+    pusha
+    
+    mov eax,4 ;printa 
+	mov ebx,1
+	mov ecx,msg0
+	mov edx,tammsg0
+	int 80h
+    
+	popa
     pop ebp ;removed stack frame
-    ret 8 ;returns and removes the arguments received from stack
+    ret 4 ;returns and removes the arguments received from stack
 
 
-LerInteiro:
-;receive integer (ascii string) input
+LEINTEIRO:
+	;receive integer (ascii string) input
     push ebp        ;creating stack frame
     mov ebp, esp    ;creating stack frame
     push ebx    ;dont push eax because eax is the return value
@@ -287,7 +252,7 @@ finish_after_check_charint:
     ret 4
 
 
-EscreverInteiro:
+ESCREVEINTEIRO:
 ;print integer (ascii string) output
     push ebp    ;creating stack frame
     mov ebp, esp    ;creating stack frame
