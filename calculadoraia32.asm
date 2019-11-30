@@ -25,14 +25,13 @@ resposta resb 11
 section .text
 global _start
 _start:
-	push endereço da msg0
+	mov ecx msg0 ; mensagem digite seu nome
+	mov edx tammsg0
+	push ecx
+	push edx
 	call ESCREVESTRING
-	;mov eax,4 ;printa solicitacao de nome
-	;mov ebx,1
-	;mov ecx,msg0
-	;mov edx,tammsg0
-	;int 80h
 	
+	mov ecx nome
 	;passar endereço nome push dw nome
 	call LESTRING
 	;mov eax,3 ;pega o nome
@@ -41,13 +40,12 @@ _start:
 	;mov edx,20
 	;int 80h
 	
-	push endereço da msg1
+	mov ecx msg1 ; mensagem hola
+	mov edx tammsg1
+	push ecx
+	push edx
 	call ESCREVESTRING
-	;mov eax,4 ;printa mensagem de hola
-	;mov ebx,1
-	;mov ecx,msg1
-	;mov edx,tammsg1
-	;int 80h
+	
 	
 	;passar endereço nome push dw nome
 	call ESCREVESTRING
@@ -57,22 +55,18 @@ _start:
 	;mov edx,20
 	;int 80h
 	
-	push endereço da msg2
+	mov ecx msg2 ; mensagem de bem vindo
+	mov edx tammsg2
+	push ecx
+	push edx
 	call ESCREVESTRING
-	;mov eax,4 ;printa mensagem de boas vindas
-	;mov ebx,1
-	;mov ecx,msg2
-	;mov edx,tammsg2
-	;int 80h
 
 MENU:	
-	push endereço da msg3
+	mov ecx msg3 ; mensagem de menu
+	mov edx tammsg3
+	push ecx
+	push edx
 	call ESCREVESTRING
-	;mov eax,4 ;printa menu
-	;mov ebx,1
-	;mov ecx,msg3
-	;mov edx,tammsg3
-	;int 80h
 	
 	;passar endereço nome push dw opcao
 	call ESCREVESTRING
@@ -100,13 +94,11 @@ MENU:
 	jne MOD
 	
 SOMA:	
-	push endereço da msg4
+	mov ecx msg4 ; mensagem de operando1
+	mov edx tammsg4
+	push ecx
+	push edx
 	call ESCREVESTRING
-	;mov eax,4 ;printa solicitacao de operando1
-	;mov ebx,1
-	;mov ecx,msg4
-	;mov edx,tammsg4
-	;int 80h
 	
 	;passar endereço push dw operando1
 	call LESTRING
@@ -116,13 +108,11 @@ SOMA:
 	;mov edx,12
 	;int 80h
 	
-	push endereço da msg5
+	mov ecx msg5 ; mensagem de operando2
+	mov edx tammsg5
+	push ecx
+	push edx
 	call ESCREVESTRING
-	;mov eax,4 ;printa solicitacao de operando2
-	;mov ebx,1
-	;mov ecx,msg5
-	;mov edx,tammsg5
-	;int 80h
 	
 	;passar endereço push dw operando2
 	call LESTRING
@@ -229,18 +219,16 @@ LESTRING: ;
     push ebp        ;cria frame de pilha
     mov ebp, esp   
     pusha
+    mov eax,3 
+    mov ebx,0
+    mov ecx, ebp+4
+    mov edx,[ebp+8]
+    int 80h
     
-  ;mov eax,3 
-  ;pega o nome
-;mov ebx,0
-;mov ecx, ebp+4
-;mov edx,20
-;int 80h
-
-   popa
+    popa
 
     pop ebp ;removing stack frame
-    ret 4   ;return and remove 1 argument from stack
+    ret 0;return 
 
 
 
@@ -252,8 +240,8 @@ ESCREVESTRING:
     
     mov eax,4 ;printa 
 	mov ebx,1
-	mov ecx,msg0
-	mov edx,tammsg0
+	mov ecx, ebp+8
+    	mov edx,ebp+4
 	int 80h
     
 	popa
