@@ -1,440 +1,395 @@
 section .data
-msg0 db 	'Digite seu nome: ', 0dh,0ah
-tammsg0 	EQU $-msg0
+msg0 db 	'Digite seu nome: '
+tammsg0 dd 17
 msg1 db 	'Hola, '
-tammsg1		EQU $-msg1
-msg2 db 	'Bem-vindo ao programa de CALC IA-32',0dh,0ah
-tammsg2		EQU $-msg2
-msg3 db 	'Escolha uma opcao: 1-soma, 2-subtracao, 3-multiplicacao, 4-divisao, 5-mod, 6-sair',0dh,0ah
-tammsg3		EQU $-msg3
-msg4 db		'Digite primeiro operando: ',0dh,0ah
-tammsg4		EQU $-msg4
-msg5 db		'Digite segundo operando: ',0dh,0ah
-tammsg5		EQU $-msg5
+tammsg1 dd 6
+msg2 db 	'Bem-vindo ao programa de CALC IA-32. '
+tammsg2 dd 37
+msg3 db 	'Escolha uma opcao: 1-soma, 2-subtracao, 3-multiplicacao, 4-divisao, 5-mod, 6-sair '
+tammsg3	dd 82
+msg4 db		'Digite primeiro operando: '
+tammsg4	dd 26
+msg5 db		'Digite segundo operando: '
+tammsg5	dd 25
+msgmul db 'Multipicacao nao disponivel. '
+tammsgmul dd 29
+operando1 dd 0, 0, 0, 0
+operando2 dd 0, 0, 0, 0
+resultado dd 0, 0, 0, 0
+opcao dd 0
+ent dd 0
+
+
+
+tamnome dd 20
 
 
 section .bss
 nome resb 20
-opcao resb 1
-operando1 resb 12
-operando2 resb 12
-resposta resb 11
-
-
 
 section .text
 global _start
 _start:
-	mov ecx msg0 ; mensagem digite seu nome
-	mov edx tammsg0
-	push ecx
-	push edx
-	call ESCREVESTRING
-	
-	mov ecx nome
-	;passar endereço nome push dw nome
-	call LESTRING
-	;mov eax,3 ;pega o nome
-	;mov ebx,0
-	;mov ecx,nome
-	;mov edx,20
-	;int 80h
-	
-	mov ecx msg1 ; mensagem hola
-	mov edx tammsg1
-	push ecx
-	push edx
-	call ESCREVESTRING
-	
-	
-	;passar endereço nome push dw nome
-	call ESCREVESTRING
-	;mov eax,4 ;printa o nome
-	;mov ebx,1
-	;mov ecx,nome
-	;mov edx,20
-	;int 80h
-	
-	mov ecx msg2 ; mensagem de bem vindo
-	mov edx tammsg2
-	push ecx
-	push edx
+
+	push DWORD msg0 ; mensagem digite seu nome
+	push DWORD [tammsg0]
 	call ESCREVESTRING
 
-MENU:	
-	mov ecx msg3 ; mensagem de menu
-	mov edx tammsg3
-	push ecx
-	push edx
+	push DWORD nome ;pega nome do usuario
+	push DWORD [tamnome]
+	call LESTRING
+
+	push DWORD msg1 ; mensagem hola
+	push DWORD [tammsg1]
 	call ESCREVESTRING
-	
-	;passar endereço nome push dw opcao
+
+	push DWORD nome ; nome
+	push DWORD [tamnome]
 	call ESCREVESTRING
-	mov eax,3 ;pega opcao do menu
-	mov ebx,0
-	mov ecx,opcao
-	mov edx,2
+
+	push DWORD msg2 ; mensagem bem vindo
+	push DWORD [tammsg2]
+	call ESCREVESTRING
+
+
+MENU:
+	push DWORD msg3 ; mensagem do menu
+	push DWORD [tammsg3]
+	call ESCREVESTRING
+
+
+	mov eax, 3
+	mov ebx, 0
+	mov ecx, opcao
+	mov edx, 2
 	int 80h
-	
-	mov ecx,0 ;converte opcao de ascii para numero
-	mov CL,[opcao]
-	sub CL,0x30
-	
-	cmp CL,6 ;if opcao ==6 jump para exit
-	jne FINAL
-	cmp CL,1 ;if opcao ==1 jump para soma
-	jne SOMA
-	cmp CL,2 ;if opcao ==2 jump para subtracao
-	jne SUBSTRACAO
-	cmp CL,3 ;if opcao ==3 jump para multiplicacao
-	jne MULTIPLICACAO
-	cmp CL,4 ;if opcao ==4 jump para divisao
-	jne DIVISAO
-	cmp CL,5 ;if opcao ==5 jump para mod
-	jne MOD
-	
-SOMA:	
-	mov ecx msg4 ; mensagem de operando1
-	mov edx tammsg4
-	push ecx
-	push edx
+
+	cmp byte [opcao], 36h
+	je FINAL
+	cmp byte [opcao], 31h
+	je SOMA
+	cmp byte [opcao], 32h
+	je SUBTRACAO
+	cmp byte [opcao], 33h
+	je MULTIPLICACAO
+	cmp byte [opcao], 34h
+	je DIVISAO
+	cmp byte [opcao], 35h
+	je MOD
+
+
+
+SOMA:
+	push DWORD msg4 ; mensagem operando1
+	push DWORD [tammsg4]
 	call ESCREVESTRING
-	
-	;passar endereço push dw operando1
-	call LESTRING
-	;mov eax,3 ;pega operando1
-	;mov ebx,0
-	;mov ecx,operando1
-	;mov edx,12
-	;int 80h
-	
-	mov ecx msg5 ; mensagem de operando2
-	mov edx tammsg5
-	push ecx
-	push edx
+
+	push DWORD operando1 ;pega operando1 do usuario
+	call LEINTEIRO
+
+	push DWORD msg5 ; mensagem operando2
+	push DWORD [tammsg5]
 	call ESCREVESTRING
-	
-	;passar endereço push dw operando2
-	call LESTRING
-	;mov eax,3 ;pega operando2
-	;mov ebx,0
-	;mov ecx,operando2
-	;mov edx,12
-	;int 80h
-	
-	;faz a conta
-	;printa a resposta
-	
+
+	push DWORD operando2 ;pega operando2 do usuario
+	call LEINTEIRO
+
+	mov ebx, [operando1]
+	add ebx, [operando2]
+	mov [resultado], ebx
+
+	push DWORD [resultado]
+	call ESCREVEINTEIRO
+
 	JMP MENU
 
 SUBTRACAO:
-	push endereço da msg4
+	push DWORD msg4 ; mensagem operando1
+	push DWORD [tammsg4]
 	call ESCREVESTRING
-	
-	;passar endereço push dw operando1
-	call LESTRING
-	
-	push endereço da msg5
+
+	push DWORD operando1 ;pega operando1 do usuario
+	call LEINTEIRO
+
+	push DWORD msg5 ; mensagem operando2
+	push DWORD [tammsg5]
 	call ESCREVESTRING
-	
-	;passar endereço push dw operando2
-	call LESTRING
-	
-	;faz a conta
-	;printa a resposta
-	
+
+	push DWORD operando2 ;pega operando2 do usuario
+	call LEINTEIRO
+
+	mov ebx, [operando1]
+	sub ebx, [operando2]
+	mov [resultado], ebx
+
+	push DWORD [resultado]
+	call ESCREVEINTEIRO
+
 	JMP MENU
-	
+
 
 MULTIPLICACAO:
-	push endereço da msg4
+	push DWORD msgmul
+	push DWORD [tammsgmul]
 	call ESCREVESTRING
-	
-	;passar endereço push dw operando1
-	call LESTRING
-	
-	push endereço da msg5
-	call ESCREVESTRING
-	
-	;passar endereço push dw operando2
-	call LESTRING
-	
-	;faz a conta
-	;printa a resposta
-	
+
 	JMP MENU
 
 DIVISAO:
-	push endereço da msg4
+
+	push DWORD msg4 ; mensagem operando1
+	push DWORD [tammsg4]
 	call ESCREVESTRING
-	
-	;passar endereço push dw operando1
-	call LESTRING
-	
-	push endereço da msg5
+
+	push DWORD operando1 ;pega operando1 do usuario
+	call LEINTEIRO
+
+	push DWORD msg5 ; mensagem operando2
+	push DWORD [tammsg5]
 	call ESCREVESTRING
-	
-	;passar endereço push dw operando2
-	call LESTRING
-	
-	;faz a conta
-	;printa a resposta
-	
+
+	push DWORD operando2 ;pega operando2 do usuario
+	call LEINTEIRO
+
+	mov eax, [operando1]
+	mov ebx, [operando2]
+	cdq
+	idiv ebx
+	mov [resultado], al
+
+	push DWORD [resultado]
+	call ESCREVEINTEIRO
+
 	JMP MENU
 
-MOD: 
-	push endereço da msg4
+MOD:
+	push DWORD msg4 ; mensagem operando1
+	push DWORD [tammsg4]
 	call ESCREVESTRING
-	
-	;passar endereço push dw operando1
-	call LESTRING
-	
-	push endereço da msg5
+
+	push DWORD operando1 ;pega operando1 do usuario
+	call LEINTEIRO
+
+	push DWORD msg5 ; mensagem operando2
+	push DWORD [tammsg5]
 	call ESCREVESTRING
-	
-	;passar endereço push dw operando2
-	call LESTRING
-	
-	;faz a conta
-	;printa a resposta
-	
-	
-	
-	
+
+	push DWORD operando2 ;pega operando2 do usuario
+	call LEINTEIRO
+
+	mov eax, [operando1]
+	mov ebx, [operando2]
+	cdq
+	idiv ebx
+	mov [resultado], edx
+
+	push DWORD [resultado]
+	call ESCREVEINTEIRO
+
 	JMP MENU
-	
+
 FINAL:
 	mov eax, 1 ; Exit code
 	mov ebx, 0
 	int 80h
-	
-	
-	
-	
-	
-	
-	
-	
-LESTRING: ; 
-    push ebp        ;cria frame de pilha
-    mov ebp, esp   
-    pusha
-    mov eax,3 
-    mov ebx,0
-    mov ecx, ebp+4
-    mov edx,[ebp+8]
-    int 80h
-    
-    popa
 
-    pop ebp ;removing stack frame
-    ret 0;return 
+;funcoes abaixo
 
-
+LESTRING: ;
+	push ebp ;cria frame da pilha
+	mov ebp,esp
+	mov eax,3
+	mov ebx,0
+	mov ecx, [ebp+12]
+	mov edx, [ebp+8]
+	int 80h ;syscall pega do teclado
+	pop ebp ;remove frame da pilha
+	ret 0;return
 
 ESCREVESTRING:
-
-  push ebp        ;cria frame de pilha
-    mov ebp, esp   
-    pusha
-    
-    mov eax,4 ;printa 
+	push ebp ;cria frame da pilha
+	mov ebp,esp
+	mov eax,4
 	mov ebx,1
-	mov ecx, ebp+8
-    	mov edx,ebp+4
-	int 80h
-    
-	popa
-    pop ebp ;removed stack frame
-    ret 4 ;returns and removes the arguments received from stack
+	mov ecx, [ebp+12]
+	mov edx, [ebp+8]
+	int 80h ;syscall printa na tela
+	pop ebp ;remove frame da pilha
+	ret 0;return
 
 
 LEINTEIRO:
-	;receive integer (ascii string) input
-    push ebp        ;creating stack frame
-    mov ebp, esp    ;creating stack frame
-    push ebx    ;dont push eax because eax is the return value
-    push ecx    ;counter of elements
-    push edx    ;pointer for char string
-    push esi    ;flag for negative
+    push ebp        ;cria frame da pilha
+    mov ebp, esp
+    push ebx
+    push ecx
+    push edx
+    push esi    ;flag negativo
 
-    push dword 0    ;reserve space to use as buffer
+    push dword 0    ;buffer
     push dword 0
     push dword 0
-    ;ask for input
 
     push edi
-    push dword 0 ;reserve buffer to read the extra chars
-    mov ecx, esp    ;move the buffer to ecx
-    sub esi, esi    ;reset counter
-    mov edi, esp ;pointer to string
+    push dword 0
+    mov ecx, esp
+    sub esi, esi    ;contador =0
+    mov edi, esp
     add edi, 8
 
-    get_input_charbychar_integer:
+    charachar:
     mov eax, 3
-    mov ebx, 0  ;0 = stdin - teclado
+    mov ebx, 0
     mov edx, 1
     int 0X80
-    cmp byte [ecx], 0X0A    ;check if char is ENTER
-    je finish_input_integer ;if enter - finish input
-    mov eax, [ecx]  ;move the char into the string
+    cmp byte [ecx], 0X0A    ;ve se eh o enter
+    je deuenter
+    mov eax, [ecx]
     mov byte [edi + esi], al
-    inc esi ;increment char counter
-    cmp esi, 12  ;check if string is full --> counter == string size
-    je check_extra_char_enter_integer   ;if yes = string full but still no enter, read and trash next chars until enter
-    jmp get_input_charbychar_integer    ;keep getting input
+    inc esi
+    cmp esi, 12  ;ve se a string ja completou
+    je sementer   ;se completou sem enterif yes = string full but still no enter, read and trash next chars until enter
+    jmp charachar    ;keep getting input
 
-    check_extra_char_enter_integer: ;read char and throw it away until enter
+    sementer: ;descarta os char até ser enter
     mov eax, 3
-    mov ebx, 0  ;0 = stdin - teclado
+    mov ebx, 0
     mov edx, 1
     int 0X80
-    cmp byte [ecx], 0X0A    ;check if char is ENTER
-    jne check_extra_char_enter_integer
+    cmp byte [ecx], 0X0A    ;ve se deu ENTER
+    jne sementer
 
-    finish_input_integer:   ;finish getting inputs
+    deuenter:   ; para de pegar char
+    add esp, 4  ;
+    pop edi
 
-    add esp, 4  ;remove buffer
-    pop edi ;pops edi back
-
-
-
-    sub eax, eax ;reset the accumulator to zero
-    mov edx, esp   ;put address in edx
-    ; add edx, 8
-    push dword 10 ;stack the value 10 to multiply
-    sub esi, esi  ;zero the negative number flag
-    sub ecx, ecx ; zero the counter
+    sub eax, eax
+    mov edx, esp
+    push dword 10 ;salva 10 pra poder mutiplicar
+    sub esi, esi  ;zera a flag
+    sub ecx, ecx ; zera o contador
 
 
-convert_charint:
-    cmp ecx, 11 ;avoids acessing an extra element
-    je finish_charint
-    movzx ebx, byte [edx] ;get char
-    inc edx ;prepare next char
-    inc ecx ;increment counter
-    cmp ebx, '-' ;check for negative
-    je negative_charint ;set negative flag
+charparaint:
+    cmp ecx, 11
+    je charintfim
+    movzx ebx, byte [edx]
+    inc edx
+    inc ecx
+    cmp ebx, '-' ;ve se eh negativo
+    je negat
 
-    cmp ebx, '0'    ;check if integer
-    jb finish_charint
-    cmp ebx, '9'    ;check if integer
-    ja finish_charint
-    sub ebx, '0' ;convert to integer
-    push edx    ;save edx before ultiplication
-    imul dword [esp+4] ;multiply eax by 10 = get ready for next digit
-    pop edx ;no use for edx, maximum value of multiplication fits eax
-    add eax, ebx    ;adds toacumulator value
-    jmp convert_charint ;jump until finished
-negative_charint:
-    mov esi, 1  ;esi is a flag or negative
-    jmp convert_charint
+    cmp ebx, '0'
+    jb charintfim
+    cmp ebx, '9'
+    ja charintfim
+    sub ebx, '0'
+    push edx
+    imul dword [esp+4] ;a cada digito, multipĺica por 10
+    pop edx
+    add eax, ebx
+    jmp charparaint ;vai convertendo ate acabar
+negat:
+    mov esi, 1
+    jmp charparaint
 
-finish_charint:
-    dec ecx ; counter will have 1 extra from the ending char
-    add esp, 16  ;remove 10 and buffer from top of stack
-    cmp esi, 1 ;check if negative
-    jne finish_after_check_charint  ;if not negative, go on to finish
-    imul eax, -1    ;if negative, multiply by -1
-finish_after_check_charint:
+charintfim:
+    dec ecx ;
+    add esp, 16
+    cmp esi, 1 ; ve se eh negativo
+    jne naonegfim  ;se nao for negativo, pode sair
+    imul eax, -1    ;se for negativo, multiplica por -1
+
+naonegfim:
     mov edx, [ebp + 8]
-    mov [edx], eax   ;no arguments - return value is ebp + 8 bytes pushed by call and frame creation (return and ebp)
-    mov eax, ecx    ;move counter into eax - number of characters input
+    mov [edx], eax
+    mov eax, ecx
 
-    pop esi ;pops original value of: esi
-    pop edx ; -edx
-    pop ecx ; -ecx
-    pop ebx ; -ebx
-
-    pop ebp ;removing stack frame
+    pop esi
+    pop edx
+    pop ecx
+    pop ebx
+    pop ebp ;remove frame de pilha
     ret 4
 
 
 ESCREVEINTEIRO:
-;print integer (ascii string) output
-    push ebp    ;creating stack frame
-    mov ebp, esp    ;creating stack frame
-    push ebx    ;dont push eax because eax is the return value
-    push ecx    ;digit counter
-    push edx    ;rest of division - number to convert
-    push esi    ;flag for negative
+    push ebp    ;cria frame de pilha
+    mov ebp, esp
+    push ebx
+    push ecx
+    push edx
+    push esi
 
-    push dword 0    ;reserve space to use as buffer
     push dword 0
     push dword 0
+    push dword 0
 
-
-
-
-    mov eax, [ebp + 8]   ;number - passed as argument through stack
+    mov eax, [ebp + 8]   ;numero pra printar
     mov ebx, esp   ;string
-    ; add ebx, 12
-    mov ecx, 0  ;digit counter
-    push dword 10 ;stack the value 10 to divide
+    mov ecx, 0
+    push dword 10 ;guarda 10 pra dividir
 
-check_negative:
-    sub esi, esi    ;set negative flag to zero
-    cmp eax, 0  ;check if number is smaller then 0
-    jge convert_intchar ;jump if number is positive
-    mov edx, -1 ;put -1 on edx for multiplication
-    imul edx     ;if negative multiply number by -1 to operate on unsigned number
-    mov esi, 1 ; esi is a negative flag
-convert_intchar:
-    sub edx, edx    ;zero edx (rest of division - number to convert)
-    idiv dword [esp + ecx * 2] ;divide by 10
-    add edx, '0'    ;convert digit to ascii char
-    push dx ;stack number converted to ascii - stack works with a minimum 16 bits
-    inc ecx ;count number of digits converted
-    cmp eax, 0  ;check if eax is 0 or if there is still stuff to divide
-    jne convert_intchar ;jumps while not finished
+ehneg:
+    sub esi, esi    ;zera a flag de negativo
+    jge intchar ;pula se for positivo
+    mov edx, -1 ;guarda -1 pra multiplicar
+    imul edx     ;se for negativo, multiplica por -1
+    mov esi, 1  ;seta a flag de negativo
 
-
+intchar:
+    sub edx, edx
+    idiv dword [esp + ecx * 2] ;divide por 10
+    add edx, '0'    ;converte
+    push dx ;
+    inc ecx ;conta o numero de digitos convertidos
+    cmp eax, 0  ;ve se foi o ultimo algarismo
+    jne intchar ;se nao, segue convertendo
 
 output_intchar:
-    mov eax, 0  ;reset eax to use it as counter of chars added to string
-    cmp esi, 0  ;check if negative
-    je unstack_result_integer   ;if positive, jumps
-    mov byte [ebx + eax], '-'   ;adds '-' to start of string
-    inc eax ;increment eax - counter of chars added to string
-    inc ecx ;increment ecx - counter of digits converted - + the negative char
-    unstack_result_integer:
-    pop dx  ;pops the chars converted to get the right order
-    mov [ebx + eax], dl ;moves the actual byte of the char to the string buffer and ignores the empty dh
-    inc eax ;increments eax - counter of chars unstacked
-    cmp eax, ecx    ;check with ecx if finished unstacking all chars
-    jne unstack_result_integer  ;jump if not finished
-    cmp esi, 0  ;checks if negative again
-    sub edx, edx    ;resets edx
-    je finish_after_check_intchar   ;jumps if positive
-    inc edx ;edx will have 1 more byte to print, in case of negative
+    mov eax, 0
+    cmp esi, 0  ;ve se deu negativo
+    je desempilha   ;se positivo, pula
+    mov byte [ebx + eax], '-'   ;coloca o negativo
+    inc eax
+    inc ecx ;
+    desempilha:
+    pop dx  ;vai tirando os chars
+    mov [ebx + eax], dl ;
+    inc eax
+    cmp eax, ecx    ;ve se ja foram todos os ints
+    jne desempilha  ;pula se nao foram
+    cmp esi, 0  ;ve se eh negativo
+    sub edx, edx
+    je terminachecarintchar
+    inc edx
 
-    finish_after_check_intchar:
-    add esp, 4 ;remove the value 10from top of stack
-print_output_integer:
-    ;outputs number
-    push ecx    ;saves ecx - digits converted
+    terminachecarintchar:
+    add esp, 4
+
+printasaida:
+    push ecx
     mov eax, 4
     mov ebx, 1
     add edx, ecx
     mov ecx, esp
-    add ecx, 4 ;4 bytes of pushed ecx - get to the start of the buffer
+    add ecx, 4
     int 0X80
 
-    ;outputs a linebreak
-    push dword 0X0D0A ;add linebreak to stack
+    push dword 0X0D0A ;da um enter
     mov eax, 4
     mov ebx, 1
     mov ecx, esp
     mov edx, 2
     int 0X80
-    add esp, 4 ;remove linebreak from stack
+    add esp, 4
 
-    pop eax ;moved ecx into eax - digit counter
-    add esp, 12    ;remove buffer from top of stack
-    pop esi ;unstacking orgiginal values of: -esi
-    pop edx ;-edx
-    pop ecx ;-ecx
-    pop ebx ;-ebx
+    pop eax
+    add esp, 12
+    pop esi
+    pop edx
+    pop ecx
+    pop ebx
 
-    pop ebp ;removed stack frame
-    ret 4 ;returns and removes the argument received from stack
+    pop ebp
+    ret 4
